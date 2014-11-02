@@ -1,0 +1,6 @@
+#Revisar que la base de datos esta corriendo en Linux
+~ ps -ef | grep pmon
+#Conectarme como root a la base de datos
+~ sqlplus / as sysdba
+SQL> startup #Levanter la base de datos, puerto default 1521
+~ lsnrctl start #listenercontrol Levantar los listerners
