@@ -4,3 +4,8 @@
 ~ sqlplus / as sysdba
 SQL> startup #Levanter la base de datos, puerto default 1521
 ~ lsnrctl start #listenercontrol Levantar los listerners
+
+#Modificar la clave del usuario de base de datos
+~ sqlplus / as sysdba
+SQL> alter user HR identified by HR account unlock
+SQL> shutdown immediate # Apagar la base de datos
