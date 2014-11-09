@@ -1,6 +1,6 @@
 PL / SQL = PL (IF / LOOPS) + SQL ( SELECT * FROM ...)
 =====================================================
->Bloque Estructura
+Bloque Estructura
 	* Anónimos
 	* Nombres
 		-> Funciones
