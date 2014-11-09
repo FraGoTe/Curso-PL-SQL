@@ -1,6 +1,6 @@
 PL / SQL = PL (IF / LOOPS) + SQL ( SELECT * FROM ...)
 =====================================================
-Bloque Estructura
+>Bloque Estructura
 	* Anónimos
 	* Nombres
 		-> Funciones
@@ -14,4 +14,5 @@ Bloque Estructura
 		colecciones en vez de cursores (Optimización 10 / 1)
 		-> Manejo de flujo lógicos/datos
 		-> Reutilizables
-		
+	* Rendimiento / Estabilidad
+	*Integración
