@@ -1,0 +1,112 @@
+-- ppt[6]
+set serveroutput on
+declare
+ v_fname varchar2(100);
+begin
+ select first_name into v_fname 
+ from employees 
+ where employee_id=100;
+ dbms_output.put_line('first_name='||v_fname);
+end;
+
+
+-- ppt[7]
+DECLARE
+ v_annual_sal NUMBER (9,2);
+BEGIN  
+/* 
+   Compute the annual salary based on the       
+   monthly salary input from the user 
+*/
+v_annual_sal := monthly_sal * 12;
+--The following line displays the annual salary DBMS_OUTPUT.PUT_LINE(v_annual_sal);
+END;
+/
+
+-- ppt[11]
+set serveroutput on
+DECLARE
+ v_salary NUMBER(6):=6000;
+ v_sal_hike VARCHAR2(5):='1000';
+ v_total_salary v_salary%TYPE;
+BEGIN
+ v_total_salary:=v_salary + v_sal_hike;
+ dbms_output.put_line(v_total_salary);
+END;
+
+
+-- ppt[16]
+set serveroutput on
+DECLARE
+ v_outer_variable VARCHAR2(20):='GLOBAL VARIABLE';
+BEGIN
+  DECLARE
+   v_inner_variable VARCHAR2(20):='LOCAL VARIABLE';
+  BEGIN
+   DBMS_OUTPUT.PUT_LINE(v_inner_variable);
+   DBMS_OUTPUT.PUT_LINE(v_outer_variable);
+  END;
+ DBMS_OUTPUT.PUT_LINE(v_outer_variable); 
+ -- DBMS_OUTPUT.PUT_LINE(v_inner_variable);
+END;
+/
+
+-- ppt[17]
+
+set serveroutput on
+DECLARE
+ v_father_name VARCHAR2(20):='Patrick';
+ v_date_of_birth DATE:='20/04/14';
+BEGIN
+  DECLARE
+   v_child_name VARCHAR2(20):='Mike';
+   v_date_of_birth DATE:='12/05/15';
+  BEGIN
+   DBMS_OUTPUT.PUT_LINE('Father''s Name: '||v_father_name);
+   DBMS_OUTPUT.PUT_LINE('Date of Birth: '||v_date_of_birth);
+   DBMS_OUTPUT.PUT_LINE('Child''s Name: '||v_child_name);
+  END;
+ DBMS_OUTPUT.PUT_LINE('Date of Birth: '||v_date_of_birth); 
+END;
+/
+
+--ppt[19]
+set serveroutput on
+BEGIN <<outer>>
+DECLARE
+ v_father_name VARCHAR2(20):='Patrick';
+ v_date_of_birth DATE:='20/11/14';
+BEGIN
+  DECLARE
+   v_child_name VARCHAR2(20):='Mike';
+   v_date_of_birth DATE:='20/12/14';
+  BEGIN
+   DBMS_OUTPUT.PUT_LINE('Father''s Name: '||v_father_name);
+   DBMS_OUTPUT.PUT_LINE('Date of Birth: '||outer.v_date_of_birth);
+   DBMS_OUTPUT.PUT_LINE('Child''s Name: '||v_child_name);
+   DBMS_OUTPUT.PUT_LINE('Date of Birth: '||v_date_of_birth);
+  END;
+END;
+END outer;
+/
+
+--ppt[20]
+set serveroutput on
+BEGIN <<outer>>
+DECLARE
+  v_sal      NUMBER(7,2) := 60000;
+  v_comm     NUMBER(7,2) := v_sal * 0.20;
+  v_message  VARCHAR2(255) := ' eligible for commission';
+BEGIN 
+  DECLARE
+    	v_sal	    NUMBER(7,2) := 50000;
+    	v_comm 	    NUMBER(7,2) := 0;
+    	v_total_comp  NUMBER(7,2) := v_sal + v_comm;
+  BEGIN 
+    	 v_message := 'CLERK not'||v_message;
+    	outer.v_comm := v_sal * 0.30; 
+  END;
+ v_message := 'SALESMAN'||v_message;
+END;
+END outer;
+/
