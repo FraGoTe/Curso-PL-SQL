@@ -1,0 +1,45 @@
+http://www.ora-code.com/code-8.html
+
+set serveroutput on
+declare
+ f date;
+ my_ex exception;
+ pragma exception_init(my_ex, -1841);
+begin
+ f:=to_date('abc', 'yyyymmdd');
+exception
+when my_ex then
+ dbms_output.put_line(sqlerrm);
+end;
+
+-- 
+
+set serveroutput on
+DECLARE 
+  v_deptno NUMBER := 501;
+  v_name VARCHAR2(20) := 'Testing';
+  e_invalid_department EXCEPTION;
+  e_invalid_deptno_limit EXCEPTION;
+BEGIN
+  BEGIN
+    IF v_deptno > 500 THEN
+        RAISE e_invalid_deptno_limit;
+    END IF;
+  EXCEPTION
+    WHEN e_invalid_deptno_limit THEN
+      DBMS_OUTPUT.PUT_LINE('B1 - Mayor a 500');
+  END;
+  
+  UPDATE departments
+  SET department_name = v_name
+  WHERE department_id = v_deptno;
+  IF SQL%NOTFOUND THEN
+    RAISE e_invalid_department;
+  END IF;
+  
+  COMMIT;
+EXCEPTION
+WHEN e_invalid_department THEN
+  DBMS_OUTPUT.PUT_LINE('B2 - No such department id.');
+END;
+/

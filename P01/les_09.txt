@@ -1,0 +1,112 @@
+-- ppt[8 - 10]
+CREATE TABLE dept AS SELECT * FROM departments;
+
+CREATE PROCEDURE add_dept IS
+ v_dept_id dept.department_id%TYPE;
+ v_dept_name dept.department_name%TYPE;
+BEGIN
+ v_dept_id:=280;
+ v_dept_name:='ST-Curriculum';
+ INSERT INTO dept(department_id,department_name)
+ VALUES(v_dept_id,v_dept_name);
+ DBMS_OUTPUT.PUT_LINE(' Inserted '|| SQL%ROWCOUNT ||' row ');
+END; 
+
+select object_name,object_type from user_objects order by 1;
+
+select * from user_source where NAME = 'ADD_DEPT';
+
+
+select count(*) from dept;
+
+begin
+ add_dept;
+ commit;
+end;
+
+select count(*) from dept;
+
+
+-- ppt[13]
+create function check_sal return boolean is
+v_dept_id employees.department_id%type;
+ v_empno   employees.employee_id%type;
+ v_sal     employees.salary%type;
+ v_avg_sal employees.salary%type;
+begin
+ v_empno:=205;
+ select salary,department_id into v_sal,v_dept_id from employees
+ where employee_id= v_empno;
+ select avg(salary) into v_avg_sal from employees where department_id=v_dept_id;
+ if v_sal > v_avg_sal then
+  return true;
+ else
+  return false;  
+ end if;
+exception
+  when no_data_found then
+   return null;
+end;
+
+select object_name,object_type from user_objects order by 1;
+
+select * from user_source where NAME = 'CHECK_SAL';
+
+set serveroutput on
+begin
+ if (check_sal is null) then
+ dbms_output.put_line('the function returned null due to exception');
+ elsif (check_sal) then  
+ dbms_output.put_line('salary > average');
+ else
+ dbms_output.put_line('salary < average');
+ end if;
+end;
+/
+
+-- ppt[15]
+drop function check_sal;
+
+create function check_sal (p_empno employees.employee_id%type)
+return boolean is
+ v_dept_id employees.department_id%type;
+ v_sal     employees.salary%type;
+ v_avg_sal employees.salary%type;
+begin
+ select salary,department_id into v_sal,v_dept_id from employees
+ where employee_id= p_empno;
+ select avg(salary) into v_avg_sal from employees where department_id=v_dept_id;
+ if v_sal > v_avg_sal then
+  return true;
+ else
+  return false;  
+ end if;
+exception
+  when no_data_found then
+   return null;
+end;
+
+-- ppt[16]
+set serveroutput on
+begin
+	dbms_output.put_line('checking for employee with id 205');
+	if (check_sal(205) is null) then
+		dbms_output.put_line('the function returned null due to exception');
+	elsif (check_sal(205)) then  
+		dbms_output.put_line('salary > average');
+	else
+		dbms_output.put_line('salary < average');
+	end if;
+	
+	dbms_output.put_line('checking for employee with id 70');
+	if (check_sal(70) is null) then
+		dbms_output.put_line('the function returned null due to exception');
+	elsif (check_sal(70)) then  
+		dbms_output.put_line('salary > average');
+	else
+		dbms_output.put_line('salary < average');
+	end if;
+end;
+
+
+

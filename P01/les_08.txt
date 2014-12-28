@@ -1,0 +1,197 @@
+-- ppt[4]
+set serveroutput on
+DECLARE
+  v_lname VARCHAR2(15);
+BEGIN
+  SELECT last_name INTO v_lname 
+  FROM employees
+  WHERE first_name='John'; 
+	DBMS_OUTPUT.PUT_LINE ('John''s last name is :' ||v_lname);
+END;
+
+-- ppt[5]
+set serveroutput on
+DECLARE
+  v_lname VARCHAR2(15);
+BEGIN
+  SELECT last_name INTO v_lname 
+  FROM employees
+  WHERE first_name='John'; 
+  DBMS_OUTPUT.PUT_LINE ('John''s last name is :' ||v_lname);
+EXCEPTION
+  WHEN TOO_MANY_ROWS THEN
+  DBMS_OUTPUT.PUT_LINE (' Your select statement retrieved multiple rows. Consider using a cursor.');
+END;
+/
+-- ppt[17]
+set serveroutput on
+DECLARE
+ e_insert_excep EXCEPTION;
+ PRAGMA EXCEPTION_INIT(e_insert_excep, -01400);
+BEGIN
+ INSERT INTO departments (department_id, department_name) VALUES (280, NULL);
+EXCEPTION
+ WHEN e_insert_excep THEN
+   DBMS_OUTPUT.PUT_LINE('INSERT OPERATION FAILED');
+   DBMS_OUTPUT.PUT_LINE(SQLERRM);
+END;
+
+-- ppt[19]
+DECLARE
+  error_code      NUMBER;
+  error_message   VARCHAR2(255);
+BEGIN
+...
+EXCEPTION
+...
+  WHEN OTHERS THEN
+    ROLLBACK;
+    error_code := SQLCODE ;
+    error_message := SQLERRM ;
+   INSERT INTO errors (e_user, e_date, error_code,error_message) VALUES(USER,SYSDATE,error_code, error_message);
+END;
+/
+
+-- ppt[21]
+set serveroutput on
+
+DECLARE 
+  v_deptno NUMBER := 500;
+  v_name VARCHAR2(20) := 'Testing';
+  e_invalid_department EXCEPTION;
+BEGIN
+  UPDATE departments
+  SET department_name = v_name
+  WHERE department_id = v_deptno;
+  IF SQL%NOTFOUND THEN
+    RAISE e_invalid_department;
+  END IF;
+  COMMIT;
+EXCEPTION
+WHEN e_invalid_department THEN
+  DBMS_OUTPUT.PUT_LINE('No such department id.');
+END;
+/
+
+-- ppt[25]
+set serveroutput on
+DECLARE  
+	e_name EXCEPTION;
+BEGIN
+    ...
+	DELETE FROM employees WHERE  last_name = 'Higgins';
+	IF SQL%NOTFOUND THEN RAISE 
+		e_name;
+	END IF;
+	EXCEPTION 
+	WHEN e_name THEN
+		RAISE_APPLICATION_ERROR (-20999, 'This is not a valid last name');   
+		...
+	END;
+/
+
+-- Executable section
+BEGIN
+...
+  DELETE FROM employees
+     WHERE  manager_id = v_mgr;
+  IF SQL%NOTFOUND THEN
+     RAISE_APPLICATION_ERROR(-20202,
+       'This is not a valid manager');
+  END IF;
+   ...
+
+-- Exception section
+...
+EXCEPTION
+   WHEN NO_DATA_FOUND THEN
+     RAISE_APPLICATION_ERROR (-20201,
+        'Manager is not a valid employee.');
+END;
+
+--
+--
+--
+ACCESS_INTO_NULL
+
+Your program attempts to assign values to the attributes of an uninitialized (atomically null) object.
+
+CASE_NOT_FOUND
+
+None of the choices in the WHEN clauses of a CASE statement is selected, and there is no ELSE clause.
+
+COLLECTION_IS_NULL
+
+Your program attempts to apply collection methods other than EXISTS to an uninitialized (atomically null) nested table or varray, or the program attempts to assign values to the elements of an uninitialized nested table or varray.
+
+CURSOR_ALREADY_OPEN
+
+Your program attempts to open an already open cursor. A cursor must be closed before it can be reopened. A cursor FOR loop automatically opens the cursor to which it refers. So, your program cannot open that cursor inside the loop.
+
+DUP_VAL_ON_INDEX
+
+Your program attempts to store duplicate values in a database column that is constrained by a unique index.
+
+INVALID_CURSOR
+
+Your program attempts an illegal cursor operation such as closing an unopened cursor.
+
+INVALID_NUMBER
+
+In a SQL statement, the conversion of a character string into a number fails because the string does not represent a valid number. (In procedural statements, VALUE_ERROR is raised.) This exception is also raised when the LIMIT-clause expression in a bulk FETCH statement does not evaluate to a positive number.
+
+LOGIN_DENIED
+
+Your program attempts to log on to Oracle with an invalid username and/or password.
+
+NO_DATA_FOUND
+
+A SELECT INTO statement returns no rows, or your program references a deleted element in a nested table or an uninitialized element in an index-by table. SQL aggregate functions such as AVG and SUM always return a value or a null. So, a SELECT INTO statement that calls an aggregate function never raises NO_DATA_FOUND. The FETCH statement is expected to return no rows eventually, so when that happens, no exception is raised.
+
+NOT_LOGGED_ON
+
+Your program issues a database call without being connected to Oracle.
+
+PROGRAM_ERROR
+
+PL/SQL has an internal problem.
+
+ROWTYPE_MISMATCH
+
+The host cursor variable and PL/SQL cursor variable involved in an assignment have incompatible return types. For example, when an open host cursor variable is passed to a stored subprogram, the return types of the actual and formal parameters must be compatible.
+
+SELF_IS_NULL
+
+Your program attempts to call a MEMBER method on a null instance. That is, the built-in parameter SELF (which is always the first parameter passed to a MEMBER method) is null.
+
+STORAGE_ERROR
+
+PL/SQL runs out of memory or memory has been corrupted.
+
+SUBSCRIPT_BEYOND_COUNT
+
+Your program references a nested table or varray element using an index number larger than the number of elements in the collection.
+
+SUBSCRIPT_OUTSIDE_LIMIT
+
+Your program references a nested table or varray element using an index number (-1 for example) that is outside the legal range.
+
+SYS_INVALID_ROWID
+
+The conversion of a character string into a universal rowid fails because the character string does not represent a valid rowid.
+
+TIMEOUT_ON_RESOURCE
+
+A time-out occurs while Oracle is waiting for a resource.
+
+TOO_MANY_ROWS
+
+A SELECT INTO statement returns more than one row.
+
+VALUE_ERROR
+
+An arithmetic, conversion, truncation, or size-constraint error occurs. For example, when your program selects a column value into a character variable, if the value is longer than the declared length of the variable, PL/SQL aborts the assignment and raises VALUE_ERROR. In procedural statements, VALUE_ERROR is raised if the conversion of a character string into a number fails. (In SQL statements, INVALID_NUMBER is raised.)
+
+ZERO_DIVIDE
+
+Your program attempts to divide a number by zero.

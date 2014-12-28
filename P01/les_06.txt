@@ -1,0 +1,130 @@
+-- ppt[8]
+set serveroutput on 
+declare
+  type typ_nodo is record (o number(3), d varchar(100));
+  v_nodo typ_nodo;
+begin  
+  v_nodo.o := 1;
+  v_nodo.d := 'Nodo 1';  
+  dbms_output.put_line('o='||v_nodo.o||' d='||v_nodo.d);
+end;
+
+set serveroutput on 
+declare
+  type typ_nodo is record (o number(3), d varchar(100));
+  type typ_lista is record (n number(3), n1 typ_nodo, n2 typ_nodo, n3 typ_nodo);
+  v_lista typ_lista;
+begin  
+  v_lista.n1.o := 1;
+  v_lista.n1.d := 'Nodo 1';  
+  dbms_output.put_line('o='||v_lista.n1.o||' d='||v_lista.n1.d);
+end;
+
+-- ppt[12]
+set serveroutput on
+DECLARE
+  TYPE t_rec IS RECORD
+    (v_sal number(8),
+     v_minsal number(8) default 1000,
+     v_hire_date employees.hire_date%type,
+     v_rec1 employees%rowtype);
+  v_myrec t_rec;
+BEGIN
+  v_myrec.v_sal := v_myrec.v_minsal + 500;
+  v_myrec.v_hire_date := sysdate;
+  SELECT * INTO v_myrec.v_rec1 FROM employees WHERE employee_id = 100;
+  DBMS_OUTPUT.PUT_LINE(v_myrec.v_rec1.last_name ||' '||to_char(v_myrec.v_hire_date) ||' '|| to_char(v_myrec.v_sal));
+END;
+
+-- ppt[14]
+DROP TABLE retired_emps;
+CREATE TABLE retired_emps
+   (EMPNO      NUMBER(4), ENAME      VARCHAR2(10),
+    JOB        VARCHAR2(9),MGR        NUMBER(4),
+    HIREDATE   DATE, LEAVEDATE  DATE,
+    SAL        NUMBER(7,2), COMM       NUMBER(7,2),
+    DEPTNO     NUMBER(2));
+	
+set serveroutput on
+DECLARE
+  v_employee_number number:= 124;
+  v_emp_rec   employees%ROWTYPE;
+BEGIN
+ SELECT * INTO v_emp_rec FROM employees WHERE  employee_id = v_employee_number;
+ INSERT INTO retired_emps(empno, ename, job, mgr, hiredate, leavedate, sal, comm, deptno)  
+   VALUES (v_emp_rec.employee_id, v_emp_rec.last_name, 
+           v_emp_rec.job_id, v_emp_rec.manager_id,
+           v_emp_rec.hire_date, SYSDATE, 
+           v_emp_rec.salary,  v_emp_rec.commission_pct, 
+           v_emp_rec.department_id);
+END;
+/
+select * from retired_emps;
+
+-- ppt[15]
+truncate table retired_emps;
+
+set serveroutput on
+DECLARE
+  v_employee_number number:= 124;
+  v_emp_rec retired_emps%ROWTYPE;
+BEGIN
+ SELECT employee_id, last_name, job_id, manager_id, hire_date, hire_date, salary, commission_pct, department_id 
+ INTO v_emp_rec 
+ FROM employees
+ WHERE  employee_id = v_employee_number;
+ INSERT INTO retired_emps VALUES v_emp_rec;
+END;
+/
+
+select * from retired_emps;
+
+-- ppt[16]
+SET VERIFY OFF
+DECLARE
+  v_employee_number number:= 124;
+  v_emp_rec retired_emps%ROWTYPE;
+BEGIN
+ SELECT * INTO v_emp_rec FROM retired_emps;
+ v_emp_rec.leavedate:=CURRENT_DATE + 38;
+ UPDATE retired_emps SET ROW = v_emp_rec WHERE empno=v_employee_number;
+END;
+/
+SELECT * FROM retired_emps;
+
+-- ppt[23]
+set serveroutput on
+DECLARE
+  TYPE dept_table_type IS TABLE OF 
+       departments%ROWTYPE INDEX PLS_INTEGER;
+  dept_table dept_table_type;
+  -- Each element of dept_table is a record 
+Begin
+  SELECT * INTO dept_table(1) FROM departments
+    WHERE department_id = 10;
+  DBMS_OUTPUT.PUT_LINE(dept_table(1).department_id || ||
+   dept_table(1).department_name || ||
+   dept_table(1).manager_id);
+END;
+/
+
+-- ppt[24]
+set serveroutput on
+DECLARE
+   TYPE emp_table_type IS TABLE OF employees%ROWTYPE INDEX BY PLS_INTEGER;
+   my_emp_table  emp_table_type;
+   max_count NUMBER(3):= 104; 
+BEGIN
+  FOR i IN 100..max_count
+  LOOP
+   SELECT * INTO my_emp_table(i) FROM employees
+   WHERE employee_id = i;
+  END LOOP;
+  FOR i IN my_emp_table.FIRST..my_emp_table.LAST 
+  LOOP
+     DBMS_OUTPUT.PUT_LINE(my_emp_table(i).last_name);
+  END LOOP;
+END; 
+/
+
+
