@@ -48,3 +48,9 @@ end;
 linux_prompt> cd /home/oracle
 linux_primpt> ls -l *.txt
 
+-- ppt[19]
+linux_prompt> cd $ORACLE_HOME/rdbms/admin
+linux_prompt> sqlplus / as sysdba
+SQL> @utlmail.sql
+SQL> start prvtmail.plb
+SQL> ALTER SYSTEM SET SMTP_OUT_SERVER='smtp.server.com' SCOPE=SPFILE;
